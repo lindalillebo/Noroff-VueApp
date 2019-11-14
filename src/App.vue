@@ -1,28 +1,40 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+      <PuppyRecipe v-bind:key="recipe.id" v-for="recipe in recipes"
+                  v-bind:thumbnail="recipe.thumbnail"
+                  v-bind:title="recipe.title"
+                  v-bind:ingredients="recipe.ingredients"
+                  v-bind:href="recipe.href">
+      </PuppyRecipe>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import PuppyRecipe from './components/PuppyRecipeComponent.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    PuppyRecipe
+  },
+  data(){
+    return{
+      recipes: []
+    }
+  },
+  beforeMount: function(){
+    const app = this;
+    const conversionUrl = 'https://quiet-wind-54e3.my-cors-proxy.workers.dev/?';
+    const url = 'http://www.recipepuppy.com/api/';
+
+      fetch(conversionUrl + url)
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(result){
+          app.recipes = result.results;
+      })
   }
 }
-</script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+</script>
